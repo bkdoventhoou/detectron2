@@ -38,7 +38,8 @@ def get_extensions():
 
     extension = CppExtension
 
-    extra_compile_args = {"cxx": ["-O3", "-std=c++17"]}
+    # Use -O2 instead of -O3 to reduce compile time during local development/experimentation
+    extra_compile_args = {"cxx": ["-O2", "-std=c++17"]}
     define_macros = []
 
     if (is_cuda and (torch_ver >= [1, 7])) or is_rocm_pytorch:
@@ -48,7 +49,7 @@ def get_extensions():
         if not is_rocm_pytorch:
             define_macros += [("WITH_CUDA", None)]
             extra_compile_args["nvcc"] = [
-                "-O3",
+                "-O2",
                 "-DCUDA_HAS_FP16=1",
                 "-D__CUDA_NO_HALF_OPERATORS__",
                 "-D__CUDA_NO_HALF_CONVERSIONS__",
@@ -95,44 +96,4 @@ setup(
     name="detectron2",
     version=get_version(),
     author="FAIR",
-    url="https://github.com/facebookresearch/detectron2",
-    description="Detectron2 is Facebook AI Research's next generation library"
-    " that provides state-of-the-art detection and segmentation algorithms.",
-    packages=find_packages(exclude=("configs", "tests", "*.tests", "*.tests.*", "tests.*")),
-    package_data={"detectron2.model_zoo": get_model_zoo_configs()},
-    python_requires=">=3.7",
-    install_requires=[
-        "Pillow>=7.1",
-        "matplotlib",
-        "pycocotools>=2.0.2",
-        "termcolor>=1.1",
-        "yacs>=0.1.8",
-        "tabulate",
-        "cloudpickle",
-        "tqdm>4.29.0",
-        "tensorboard",
-        "fvcore>=0.1.5,<0.1.6",
-        "iopath>=0.1.7,<0.1.10",
-        "omegaconf>=2.1,<2.4",
-        "hydra-core>=1.1",
-        "black",
-        "packaging",
-    ],
-    extras_require={
-        "all": [
-            "fairscale",
-            "timm",
-            "scipy>1.5.1",
-            "shapely",
-            "pygments>=2.2",
-        ],
-        "dev": [
-            "flake8==3.8.1",
-            "isort==4.3.21",
-            "flake8-bugbear",
-            "flake8-comprehensions",
-        ],
-    },
-    ext_modules=get_extensions(),
-    cmdclass={"build_ext": torch.utils.cpp_extension.BuildExtension},
-)
+    url="https://github.com/fac
