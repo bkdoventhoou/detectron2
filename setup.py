@@ -38,9 +38,9 @@ def get_extensions():
 
     extension = CppExtension
 
-    # Use -O2 for better performance. Switch to -O0 for faster incremental builds
-    # during local experimentation/debugging.
-    extra_compile_args = {"cxx": ["-O2", "-std=c++17"]}
+    # Use -O0 for faster incremental builds during local development.
+    # Switch back to -O2 for better performance in production builds.
+    extra_compile_args = {"cxx": ["-O0", "-std=c++17"]}
     define_macros = []
 
     if (is_cuda and (torch_ver >= [1, 7])) or is_rocm_pytorch:
@@ -90,4 +90,4 @@ def get_model_zoo_configs() -> List[str]:
     config_paths = glob.glob("configs/**/*.yaml", recursive=True) + glob.glob(
         "configs/**/*.py", recursive=True
     )
-    return config_paths
+    r
