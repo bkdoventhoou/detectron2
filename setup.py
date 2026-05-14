@@ -38,8 +38,9 @@ def get_extensions():
 
     extension = CppExtension
 
-    # Use -O2 instead of -O3 to reduce compile time during local development/experimentation
-    extra_compile_args = {"cxx": ["-O2", "-std=c++17"]}
+    # Use -O0 for faster incremental builds during local experimentation.
+    # Switch back to -O2 (or -O3) for benchmarking / production builds.
+    extra_compile_args = {"cxx": ["-O0", "-std=c++17"]}
     define_macros = []
 
     if (is_cuda and (torch_ver >= [1, 7])) or is_rocm_pytorch:
@@ -49,7 +50,7 @@ def get_extensions():
         if not is_rocm_pytorch:
             define_macros += [("WITH_CUDA", None)]
             extra_compile_args["nvcc"] = [
-                "-O2",
+                "-O0",
                 "-DCUDA_HAS_FP16=1",
                 "-D__CUDA_NO_HALF_OPERATORS__",
                 "-D__CUDA_NO_HALF_CONVERSIONS__",
@@ -93,34 +94,4 @@ def get_model_zoo_configs() -> List[str]:
 
 
 setup(
-    name="detectron2",
-    version=get_version(),
-    author="FAIR",
-    # Personal fork: using my own email for local installs/experiments
-    author_email="me@localhost",
-    url="https://github.com/facebookresearch/detectron2",
-    description="Detectron2 is FAIR's next-generation object detection platform.",
-    packages=find_packages(exclude=("configs", "tests", "*.tests", "*.tests.*", "tests.*")),
-    package_data={"detectron2": ["model_zoo/configs/**/*.yaml", "model_zoo/configs/**/*.py"]},
-    python_requires=">=3.7",
-    install_requires=[
-        "termcolor>=1.1",
-        "Pillow>=7.1",
-        "yacs>=0.1.8",
-        "tabulate",
-        "cloudpickle",
-        "matplotlib",
-        "mock",
-        "pycocotools>=2.0.2",
-        "tqdm>4.29.0",
-        "tensorboard",
-        "fvcore>=0.1.5,<0.1.6",
-        "iopath>=0.1.7,<0.1.10",
-        "omegaconf>=2.1,<2.4",
-        "hydra-core>=1.1",
-        "black",
-        "packaging",
-    ],
-    ext_modules=get_extensions(),
-    cmdclass={"build_ext": torch.utils.cpp_extension.BuildExtension},
-)
+    nam
