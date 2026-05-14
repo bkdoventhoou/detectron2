@@ -38,9 +38,9 @@ def get_extensions():
 
     extension = CppExtension
 
-    # Use -O0 for faster incremental builds during local experimentation.
-    # Switch back to -O2 (or -O3) for benchmarking / production builds.
-    extra_compile_args = {"cxx": ["-O0", "-std=c++17"]}
+    # Use -O2 for better performance. Switch to -O0 for faster incremental builds
+    # during local experimentation/debugging.
+    extra_compile_args = {"cxx": ["-O2", "-std=c++17"]}
     define_macros = []
 
     if (is_cuda and (torch_ver >= [1, 7])) or is_rocm_pytorch:
@@ -50,7 +50,7 @@ def get_extensions():
         if not is_rocm_pytorch:
             define_macros += [("WITH_CUDA", None)]
             extra_compile_args["nvcc"] = [
-                "-O0",
+                "-O2",
                 "-DCUDA_HAS_FP16=1",
                 "-D__CUDA_NO_HALF_OPERATORS__",
                 "-D__CUDA_NO_HALF_CONVERSIONS__",
@@ -91,7 +91,3 @@ def get_model_zoo_configs() -> List[str]:
         "configs/**/*.py", recursive=True
     )
     return config_paths
-
-
-setup(
-    nam
